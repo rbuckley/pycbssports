@@ -33,3 +33,12 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# swap files
+*.swp
+
+# virtualenv
+venv
+
+# rope files
+.ropeproject
