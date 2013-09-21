@@ -9,7 +9,7 @@
 VERSION = '0.001a'
 
 CBSSPORTS_URL = 'http://api.cbssports.com/fantasy'
-
+CBSSPORTS_API_VERSION = '2.0'
 RESPONSE_FORMAT = 'JSON'
 
 
