@@ -4,13 +4,14 @@
 #
 #
 #
-
+import requests
 
 VERSION = '0.001a'
 
 CBSSPORTS_URL = 'http://api.cbssports.com/fantasy'
 CBSSPORTS_API_VERSION = '2.0'
-RESPONSE_FORMAT = 'JSON'
+JSON_RESPONSE_FORMAT = 'JSON'
+XML_RESPONSE_FORMAT = 'XML'
 
 
 # METHODS follows this
@@ -21,46 +22,129 @@ RESPONSE_FORMAT = 'JSON'
 #           ],
 #           'method2: [
 #               (name, klass, [options])
-#           ]
+#           ]set syntax
 #       },
 #       'namespace2:{
 #       ...
 #       ...
 
 METHODS = {
-    # draft methods
-    'draft': {
-        'config': [
+    # league methods
+    'league': {
+        'news': {
+            'story': [
+            ],
+            'headlines': [
+            ]
+        }, # league.news
+        'transaction-list': {
+            'add-drops': [
+            ],
+            'trades': [
+            ],
+            'log': [
+            ]
+        }, # league.transaction-list
+        'transactions': {
+            'add-drop': [
+            ],
+            'lineup': [
+            ],
+            'trade': [
+            ],
+            'waiver-order': [
+            ]
+        }, # league.transactions
+        'scoring': {
+            'live': [
+            ],
+            'preview': [
+            ],
+            'categories': [
+            ],
+            'rules': [
+            ]
+        }, # league.scoring
+        'standings': {
+            'breakdown': [
+            ],
+            'by-period': [
+            ],
+            'overall': [
+            ],
+            'power': [
+            ]
+        }, # league.standings
+        'draft': {
+            'config': [
+            ],
+            'order': [
+            ],
+            'results': [
+            ]
+        } # league.draft 
+    }, # end of the league methods
+    # stats methods
+    'stats': {
+        'defense-vs-position': [
         ],
-        'order': [
+        'situational-stats': [
         ],
-        'results': [
+        'categories': [
         ]
-    },
-    # gerneral methods
+    }, 
+    'players': {
+        'average-draft-position': [
+        ],
+        'gamelog': [
+        ],
+        'inactives': [
+        ],
+        'injuries': [
+        ],
+        'list': [
+        ],
+        'outlook': [
+        ],
+        'profile': [
+        ],
+        'rankings': [
+        ],
+        'search': [
+        ],
+        'updates': [
+        ]
+    }, # players
+    'roster_trends': {
+        'most-activated': [
+        ],
+        'most-added': [
+        ],
+        'most-benched': [
+        ],
+        'most-dropped': [
+        ],
+        'most-owned': [
+        ],
+        'most-started': [
+        ],
+        'most-traded': [
+        ],
+        'most-viewed': [
+        ]
+    }, # players.roster-trends
     'general': {
+        'auction-values': [
+        ],
+        'stats': [
+        ],
         'positions': [
         ],
-        'professional_teams': [
+        'pro-teams': [
         ],
         'sports': [
         ]
-    },
-    'league_info': {
-        'owners': [
-        ],
-        'teams': [
-        ],
-        'dates': [
-        ],
-        'details': [
-        ],
-        'rules': [
-        ],
-        'schedule': [
-        ]
-    },
-
+    }, # general methods with no group
 }
 
 
@@ -104,9 +188,9 @@ class Group(object):
         self._name = name
 
     def __call__(self, method=None, args=None):
+        print ('from %s calling method: %s' % (self._name, method))
         if method is None:
             return self
-
         return self._client('%s.%s' % (self._name, method), args)
 
 
@@ -120,6 +204,7 @@ def generate_methods():
             print methods[method].__name__
 
         print('creating new class: %sGroup' % namespace.title())
+        # need to add our new functions to the globals so they can be used later
         group = type('%sGroup' % namespace.title(), (Group,), methods)
 
         globals()[group.__name__] = group
@@ -131,13 +216,28 @@ class API(object):
 
     def __init__(self, access_token=None):
         self.access_token = access_token
-
+        
+        # assign all the functions to this class
         for namespace in METHODS:
-            self.__dict__[namespace] = eval('%sGroup(self, \'%s\')' % (namespace.title(), 'api.%s' % namespace))
+            self.__dict__[namespace] = eval('%sGroup(self, \'%s\')' % (namespace.title(), 'API.%s' % namespace))
 
     def __call__(self, method=None, args=None):
         """Do the actual call to the REST api"""
+        print ('from API calling method: %s' % method)
         if method is None:
             return self
 
-        payload = {'access_token': access_token}
+        self._build_args(method, args)
+
+        return requests.get()
+
+    def _build_args(self, method=None, args=None):
+        if args is None:
+            args = {}
+
+        for arg in args:
+            pass
+
+        args['access_token'] = self.access_token
+        args['version'] = CBSSPORTS_API_VERSION
+        args['format'] = JSON_RESPONSE_FORMAT

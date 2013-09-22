@@ -36,6 +36,7 @@ nosetests.xml
 
 # swap files
 *.swp
+*.swo
 
 # virtualenv
 venv
