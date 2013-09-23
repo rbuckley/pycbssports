@@ -37,8 +37,8 @@ METHODS = {
             'headlines': [
             ]
         }, # league.news
-        'transaction-list': {
-            'add-drops': [
+        'transaction_list': {
+            'add_drops': [
             ],
             'trades': [
             ],
@@ -46,13 +46,13 @@ METHODS = {
             ]
         }, # league.transaction-list
         'transactions': {
-            'add-drop': [
+            'add_drop': [
             ],
             'lineup': [
             ],
             'trade': [
             ],
-            'waiver-order': [
+            'waiver_order': [
             ]
         }, # league.transactions
         'scoring': {
@@ -68,7 +68,7 @@ METHODS = {
         'standings': {
             'breakdown': [
             ],
-            'by-period': [
+            'by_period': [
             ],
             'overall': [
             ],
@@ -86,15 +86,15 @@ METHODS = {
     }, # end of the league methods
     # stats methods
     'stats': {
-        'defense-vs-position': [
+        'defense_vs_position': [
         ],
-        'situational-stats': [
+        'situational_stats': [
         ],
         'categories': [
         ]
     }, 
     'players': {
-        'average-draft-position': [
+        'average_draft_position': [
         ],
         'gamelog': [
         ],
@@ -116,31 +116,31 @@ METHODS = {
         ]
     }, # players
     'roster_trends': {
-        'most-activated': [
+        'most_activated': [
         ],
-        'most-added': [
+        'most_added': [
         ],
-        'most-benched': [
+        'most_benched': [
         ],
-        'most-dropped': [
+        'most_dropped': [
         ],
-        'most-owned': [
+        'most_owned': [
         ],
-        'most-started': [
+        'most_started': [
         ],
-        'most-traded': [
+        'most_traded': [
         ],
-        'most-viewed': [
+        'most_viewed': [
         ]
     }, # players.roster-trends
     'general': {
-        'auction-values': [
+        'auction_values': [
         ],
         'stats': [
         ],
         'positions': [
         ],
-        'pro-teams': [
+        'pro_teams': [
         ],
         'sports': [
         ]
@@ -219,17 +219,17 @@ class API(object):
         
         # assign all the functions to this class
         for namespace in METHODS:
-            self.__dict__[namespace] = eval('%sGroup(self, \'%s\')' % (namespace.title(), 'API.%s' % namespace))
+            self.__dict__[namespace] = eval('%sGroup(self, \'%s\')' % (namespace.title(), '%s' % namespace))
 
     def __call__(self, method=None, args=None):
         """Do the actual call to the REST api"""
-        print ('from API calling method: %s' % method)
         if method is None:
             return self
 
-        self._build_args(method, args)
-
-        return requests.get()
+        args = self._build_args(method, args)
+        
+        url = self._build_url(method)
+        return requests.get(url, params=args)
 
     def _build_args(self, method=None, args=None):
         if args is None:
@@ -241,3 +241,7 @@ class API(object):
         args['access_token'] = self.access_token
         args['version'] = CBSSPORTS_API_VERSION
         args['format'] = JSON_RESPONSE_FORMAT
+        return args
+    
+    def _build_url(self, parts):
+        return CBSSPORTS_URL + parts.replace('.', '/')
