@@ -32,115 +32,161 @@ METHODS = {
     # league methods
     'league_news': {
         'story': [
+            ('response_format', str, ['optional'])
         ],
         'headlines': [
+            ('response_format', str, ['optional'])
         ]
     }, # league.news
     'league_transaction_list': {
         'add_drops': [
+            ('response_format', str, ['optional'])
         ],
         'trades': [
+            ('response_format', str, ['optional'])
         ],
         'log': [
+            ('response_format', str, ['optional'])
         ]
     }, # league.transaction-list
     'league_transactions': {
        'add_drop': [
+            ('response_format', str, ['optional'])
         ],
         'lineup': [
+            ('response_format', str, ['optional'])
         ],
         'trade': [
+            ('response_format', str, ['optional'])
         ],
         'waiver_order': [
+            ('response_format', str, ['optional'])
         ]
     }, # league.transactions
     'league_scoring': {
         'live': [
+            ('response_format', str, ['optional'])
         ],
         'preview': [
+            ('response_format', str, ['optional'])
         ],
         'categories': [
+            ('response_format', str, ['optional'])
         ],
         'rules': [
+            ('response_format', str, ['optional'])
         ]
     }, # league.scoring
     'league_standings': {
        'breakdown': [
+            ('response_format', str, ['optional'])
         ],
         'by_period': [
+            ('response_format', str, ['optional'])
         ],
         'overall': [
+            ('response_format', str, ['optional'])
         ],
         'power': [
+            ('response_format', str, ['optional'])
         ]
     }, # league.standings
     'league_draft': {
         'config': [
+            ('response_format', str, ['optional'])
         ],
         'order': [
+            ('response_format', str, ['optional'])
         ],
         'results': [
+            ('response_format', str, ['optional'])
         ]
     }, # league.draft 
     # stats methods
     'stats': {
         'defense_vs_position': [
+            ('response_format', str, ['optional'])
         ],
         'situational_stats': [
+            ('response_format', str, ['optional'])
         ],
         'categories': [
+            ('response_format', str, ['optional'])
         ]
     }, 
     'players': {
         'average_draft_position': [
+            ('response_format', str, ['optional'])
         ],
         'gamelog': [
+            ('response_format', str, ['optional'])
         ],
         'inactives': [
+            ('response_format', str, ['optional'])
         ],
         'injuries': [
+            ('response_format', str, ['optional'])
         ],
         'list': [
+            ('response_format', str, ['optional'])
         ],
         'outlook': [
+            ('response_format', str, ['optional'])
         ],
         'profile': [
+            ('response_format', str, ['optional'])
         ],
         'rankings': [
+            ('response_format', str, ['optional'])
         ],
         'search': [
+            ('response_format', str, ['optional'])
         ],
         'updates': [
+            ('response_format', str, ['optional'])
         ]
     }, # players
     'roster_trends': {
         'most_activated': [
+            ('response_format', str, ['optional'])
         ],
         'most_added': [
+            ('response_format', str, ['optional'])
         ],
         'most_benched': [
+            ('response_format', str, ['optional'])
         ],
         'most_dropped': [
+            ('response_format', str, ['optional'])
         ],
         'most_owned': [
+            ('response_format', str, ['optional'])
         ],
         'most_started': [
+            ('response_format', str, ['optional'])
         ],
         'most_traded': [
+            ('response_format', str, ['optional'])
         ],
         'most_viewed': [
+            ('response_format', str, ['optional'])
         ]
     }, # players.roster-trends
     'general': {
         'auction_values': [
+            ('response_format', str, ['optional'])
         ],
         'stats': [
+            ('response_format', str, ['optional'])
         ],
         'positions': [
+            ('response_format', str, ['optional'])
         ],
         'pro_teams': [
+            ('response_format', str, ['optional'])
         ],
         'sports': [
+            ('response_format', str, ['optional'])
         ]
     }, # general methods with no group
 }
