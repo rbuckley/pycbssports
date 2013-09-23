@@ -7,10 +7,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def test():
-    access_token = request.get('access_token')
+    access_token = request.args.get('access_token')
 
     api = API(access_token)
 
     r = api.players.list()
 
-    print r.json.dumps(indent=4, separators=(',',':'))
+    print r.json.dumps()
+
+    return WAHOO

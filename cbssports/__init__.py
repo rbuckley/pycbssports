@@ -8,7 +8,7 @@ import requests
 
 VERSION = '0.001a'
 
-CBSSPORTS_URL = 'http://api.cbssports.com/fantasy'
+CBSSPORTS_URL = 'http://api.cbssports.com/fantasy/'
 CBSSPORTS_API_VERSION = '2.0'
 JSON_RESPONSE_FORMAT = 'JSON'
 XML_RESPONSE_FORMAT = 'XML'
@@ -30,60 +30,58 @@ XML_RESPONSE_FORMAT = 'XML'
 
 METHODS = {
     # league methods
-    'league': {
-        'news': {
-            'story': [
-            ],
-            'headlines': [
-            ]
-        }, # league.news
-        'transaction_list': {
-            'add_drops': [
-            ],
-            'trades': [
-            ],
-            'log': [
-            ]
-        }, # league.transaction-list
-        'transactions': {
-            'add_drop': [
-            ],
-            'lineup': [
-            ],
-            'trade': [
-            ],
-            'waiver_order': [
-            ]
-        }, # league.transactions
-        'scoring': {
-            'live': [
-            ],
-            'preview': [
-            ],
-            'categories': [
-            ],
-            'rules': [
-            ]
-        }, # league.scoring
-        'standings': {
-            'breakdown': [
-            ],
-            'by_period': [
-            ],
-            'overall': [
-            ],
-            'power': [
-            ]
-        }, # league.standings
-        'draft': {
-            'config': [
-            ],
-            'order': [
-            ],
-            'results': [
-            ]
-        } # league.draft 
-    }, # end of the league methods
+    'league_news': {
+        'story': [
+        ],
+        'headlines': [
+        ]
+    }, # league.news
+    'league_transaction_list': {
+        'add_drops': [
+        ],
+        'trades': [
+        ],
+        'log': [
+        ]
+    }, # league.transaction-list
+    'league_transactions': {
+       'add_drop': [
+        ],
+        'lineup': [
+        ],
+        'trade': [
+        ],
+        'waiver_order': [
+        ]
+    }, # league.transactions
+    'league_scoring': {
+        'live': [
+        ],
+        'preview': [
+        ],
+        'categories': [
+        ],
+        'rules': [
+        ]
+    }, # league.scoring
+    'league_standings': {
+       'breakdown': [
+        ],
+        'by_period': [
+        ],
+        'overall': [
+        ],
+        'power': [
+        ]
+    }, # league.standings
+    'league_draft': {
+        'config': [
+        ],
+        'order': [
+        ],
+        'results': [
+        ]
+    }, # league.draft 
     # stats methods
     'stats': {
         'defense_vs_position': [
@@ -238,9 +236,9 @@ class API(object):
         for arg in args:
             pass
 
-        args['access_token'] = self.access_token
         args['version'] = CBSSPORTS_API_VERSION
-        args['format'] = JSON_RESPONSE_FORMAT
+        args['access_token'] = self.access_token
+        args['response_format'] = JSON_RESPONSE_FORMAT
         return args
     
     def _build_url(self, parts):
