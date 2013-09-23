@@ -30,6 +30,35 @@ XML_RESPONSE_FORMAT = 'XML'
 
 METHODS = {
     # league methods
+    'league': {
+        'owners': [
+            ('response_format', str, ['optional'])
+        ],
+        'teams': [
+            ('response_format', str, ['optional'])
+        ],
+        'dates': [
+            ('response_format', str, ['optional'])
+        ],
+        'details': [
+            ('response_format', str, ['optional'])
+        ],
+        'rules': [
+            ('response_format', str, ['optional'])
+        ],
+        'schedules': [
+            ('response_format', str, ['optional'])
+        ],
+        'rosters': [
+            ('response_format', str, ['optional'])
+        ],
+        'fantasy__points': [
+            ('response_format', str, ['optional'])
+        ],
+        'stats': [
+            ('response_format', str, ['optional'])
+        ]
+    },
     'league_news': {
         'story': [
             ('response_format', str, ['optional'])
@@ -37,9 +66,9 @@ METHODS = {
         'headlines': [
             ('response_format', str, ['optional'])
         ]
-    }, # league.news
-    'league_transaction_list': {
-        'add_drops': [
+    },  # league.news
+    'league_transaction__list': {
+        'add__drops': [
             ('response_format', str, ['optional'])
         ],
         'trades': [
@@ -48,9 +77,9 @@ METHODS = {
         'log': [
             ('response_format', str, ['optional'])
         ]
-    }, # league.transaction-list
+    },  # league.transaction-list
     'league_transactions': {
-       'add_drop': [
+        'add__drop': [
             ('response_format', str, ['optional'])
         ],
         'lineup': [
@@ -59,10 +88,10 @@ METHODS = {
         'trade': [
             ('response_format', str, ['optional'])
         ],
-        'waiver_order': [
+        'waiver__order': [
             ('response_format', str, ['optional'])
         ]
-    }, # league.transactions
+    },  # league.transactions
     'league_scoring': {
         'live': [
             ('response_format', str, ['optional'])
@@ -76,12 +105,12 @@ METHODS = {
         'rules': [
             ('response_format', str, ['optional'])
         ]
-    }, # league.scoring
+    },  # league.scoring
     'league_standings': {
-       'breakdown': [
+        'breakdown': [
             ('response_format', str, ['optional'])
         ],
-        'by_period': [
+        'by__period': [
             ('response_format', str, ['optional'])
         ],
         'overall': [
@@ -90,7 +119,7 @@ METHODS = {
         'power': [
             ('response_format', str, ['optional'])
         ]
-    }, # league.standings
+    },  # league.standings
     'league_draft': {
         'config': [
             ('response_format', str, ['optional'])
@@ -101,10 +130,10 @@ METHODS = {
         'results': [
             ('response_format', str, ['optional'])
         ]
-    }, # league.draft 
+    },  # league.draft
     # stats methods
     'stats': {
-        'defense_vs_position': [
+        'defense__vs__position': [
             ('response_format', str, ['optional'])
         ],
         'situational_stats': [
@@ -113,9 +142,9 @@ METHODS = {
         'categories': [
             ('response_format', str, ['optional'])
         ]
-    }, 
+    },
     'players': {
-        'average_draft_position': [
+        'average__draft__position': [
             ('response_format', str, ['optional'])
         ],
         'gamelog': [
@@ -145,50 +174,53 @@ METHODS = {
         'updates': [
             ('response_format', str, ['optional'])
         ]
-    }, # players
-    'roster_trends': {
-        'most_activated': [
+    },  # players
+    'players_roster__trends': {
+        'most__activated': [
             ('response_format', str, ['optional'])
         ],
-        'most_added': [
+        'most__added': [
             ('response_format', str, ['optional'])
         ],
-        'most_benched': [
+        'most__benched': [
             ('response_format', str, ['optional'])
         ],
-        'most_dropped': [
+        'most__dropped': [
             ('response_format', str, ['optional'])
         ],
-        'most_owned': [
+        'most__owned': [
             ('response_format', str, ['optional'])
         ],
-        'most_started': [
+        'most__started': [
             ('response_format', str, ['optional'])
         ],
-        'most_traded': [
+        'most__traded': [
             ('response_format', str, ['optional'])
         ],
-        'most_viewed': [
+        'most__viewed': [
             ('response_format', str, ['optional'])
         ]
-    }, # players.roster-trends
+    },  # players.roster-trends
     'general': {
-        'auction_values': [
+        'auction__values': [
             ('response_format', str, ['optional'])
         ],
         'stats': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, ['optional']),
+            ('timeframe', str, [('allowed', 'YYYY')]),
+            ('period', str, [('allowed', 'ytd', '3yr', 'YYYYMMDD')]),
+            ('player_id', str, ['optional']),
         ],
         'positions': [
             ('response_format', str, ['optional'])
         ],
-        'pro_teams': [
+        'pro__teams': [
             ('response_format', str, ['optional'])
         ],
         'sports': [
             ('response_format', str, ['optional'])
         ]
-    }, # general methods with no group
+    },  # general methods with no group
 }
 
 
@@ -199,6 +231,16 @@ def generate_cbssports_method(namespace, method_name, param_data):
     required = [x for x in param_data
                 if 'optional' not in x[2]
                 ]
+
+    # list of allowable values are in the third tuple
+    allowable = [x for x in param_data
+                 if 'allowable' in x[2]
+                 and [y for y in x[2] if isinstance(y, tuple) and y and y[0] != 'allowable']]
+
+    allowable = [x for x in param_data
+                 if 'allowable' in x[2]]
+    for allowed in allowable:
+        print 'allowed value = ' + allowed
 
     def cbssports_method(self, *args, **kwargs):
         params = {}
@@ -227,7 +269,7 @@ class Group(object):
     """Represents a "namespace" of CBSSPORTS API Calls."""
 
     def __init__(self, client, name):
-        print ('name: ' + name)
+        print ('name: ' + name + ' client: ' + repr(client))
         self._client = client
         self._name = name
 
@@ -238,14 +280,15 @@ class Group(object):
         return self._client('%s.%s' % (self._name, method), args)
 
 
-def generate_methods():
+def generate_methods(args):
     # loop over all the groups in the METHODS table
-    for namespace in METHODS:
+    for namespace in args:
+        print namespace
         methods = {}
         # loop over each method in each group and process it
-        for method, param_data in METHODS[namespace].iteritems():
+        for method, param_data in args[namespace].iteritems():
             methods[method] = generate_cbssports_method(namespace, method, param_data)
-            print methods[method].__name__
+            #print methods[method].__name__
 
         print('creating new class: %sGroup' % namespace.title())
         # need to add our new functions to the globals so they can be used later
@@ -253,39 +296,90 @@ def generate_methods():
 
         globals()[group.__name__] = group
 
-generate_methods()
+generate_methods(METHODS)
 
+class CBSSportsError(Exception):
+    """ Exception class for custom errors """
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 class API(object):
 
-    def __init__(self, access_token=None):
+    def __init__(self, response_format=None, access_token=None):
+        """
+        Provides access to the CBSSPORTS Development API
+
+        Instance Variables:
+            access_token:
+                When the app is first opened this will be passed in and must be passed
+                with each method call
+
+            default_response:
+                Optional, will set the format of responses to either JSON or XML
+        """
+
+
         self.access_token = access_token
-        
+        if response_format == 'JSON' or response_format == 'XML':
+            self.default_response = response_format
+        else:
+            raise ValueError("%s not allowed for default_response, only JSON or XML" % response_format)
+
         # assign all the functions to this class
         for namespace in METHODS:
             self.__dict__[namespace] = eval('%sGroup(self, \'%s\')' % (namespace.title(), '%s' % namespace))
 
     def __call__(self, method=None, args=None):
         """Do the actual call to the REST api"""
+        if self.access_token is None:
+            raise CBSSportsError("access_token must be set before making an API call")
+
         if method is None:
             return self
 
-        args = self._build_args(method, args)
-        
+        method = self._fix_method_name(method)
+
+        args = self._build_args(args)
+
         url = self._build_url(method)
         return requests.get(url, params=args)
 
-    def _build_args(self, method=None, args=None):
+    def set_access_token(self, access_token):
+        """Set the access_token if not already done"""
+        self.access_token = access_token
+
+    def _build_args(self, args=None):
+        """Attach args that need to be with every query"""
         if args is None:
             args = {}
+
+        response_set = 'response_format' in args.keys()
 
         for arg in args:
             pass
 
         args['version'] = CBSSPORTS_API_VERSION
         args['access_token'] = self.access_token
-        args['response_format'] = JSON_RESPONSE_FORMAT
+
+        # if a response format was passed in on initialization use it
+        # otherwise we do not pass the argument which results in xml response
+        if not response_set and self.default_response == 'JSON':
+            args['response_format'] = JSON_RESPONSE_FORMAT
+
         return args
-    
+
+    def _fix_method_name(self, method):
+        """
+        Some methods need to be fixed, _s need to be replaced with -s
+        Or .s need to be put in
+        Or if it starts with general, remove it  all
+        """
+
+        return method.replace('__', '-').replace('_', '.').replace('general.', '')
+
     def _build_url(self, parts):
+        """Returns the url with .s replaced by /s"""
         return CBSSPORTS_URL + parts.replace('.', '/')

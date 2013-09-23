@@ -1,0 +1,26 @@
+  <html>
+    <head>
+        <title>{% if title %} {{title}} {% else %}API Test{% endif %}</title>
+      {% block css %}
+      {% endblock %}
+      {% block script %}
+      {% endblock %}
+    </head>
+    <body>
+      <div id="header">{% block header %}{% endblock %}</div>
+		<div>Test API Site:
+            <a href="{{ url_for('.index') }}">Home</a>
+            <a href="{{ url_for('.test') }}">Test</a>
+        </div>
+        <hr>
+      <div id="messages-wrap">
+        <div id="messages">
+          {% for category, msg in get_flashed_messages(with_categories=true) %}
+            <p class="message flash-{{ category }}">{{ msg }}</p>
+          {% endfor %}
+        </div>
+      </div>
+      <div id="content">{% block content %}{% endblock %}</div>
+      <div id="footer">{% block footer %}{% endblock %}</div>
+    </body>
+  </html>
