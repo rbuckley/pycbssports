@@ -207,8 +207,8 @@ METHODS = {
         ],
         'stats': [
             ('response_format', str, ['optional']),
-            ('timeframe', str, [('allowed', 'YYYY')]),
-            ('period', str, [('allowed', 'ytd', '3yr', 'YYYYMMDD')]),
+            ('timeframe', str, ['allowed', ('YYYY')]),
+            ('period', str, ['allowed', ('ytd', '3yr', 'YYYYMMDD')]),
             ('player_id', str, ['optional']),
         ],
         'positions': [
@@ -225,22 +225,17 @@ METHODS = {
 
 
 def generate_cbssports_method(namespace, method_name, param_data):
-    #print ('Group: ' + namespace + ', method: ' + method_name + ', params: ')
-
-    # a required option does not have 'optional' in the third tuple(options)
-    required = [x for x in param_data
-                if 'optional' not in x[2]
-                ]
-
-    # list of allowable values are in the third tuple
-    allowable = [x for x in param_data
-                 if 'allowable' in x[2]
-                 and [y for y in x[2] if isinstance(y, tuple) and y and y[0] != 'allowable']]
-
-    allowable = [x for x in param_data
-                 if 'allowable' in x[2]]
-    for allowed in allowable:
-        print 'allowed value = ' + allowed
+    """
+    given the above data parse it into a function that will
+    check parameters
+    """
+    required = []
+    for param in param_data:
+        if 'optional' not in param[2]:
+            required.append(param)
+            print param[0] + ' is required'
+        if 'allowed' in param[2]:
+            print 'allowed values for: ' + param[0] + ': ' + repr(param[2][1:])
 
     def cbssports_method(self, *args, **kwargs):
         params = {}
@@ -250,7 +245,7 @@ def generate_cbssports_method(namespace, method_name, param_data):
 
         for param in required:
             if param[0] not in params:
-                raise TypeError("missing parameter %s" % param[0])
+                raise TypeError('missing parameter %s' % param[0])
 
         for name, klass, options in param_data:
             pass

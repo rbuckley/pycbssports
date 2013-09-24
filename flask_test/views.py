@@ -10,7 +10,7 @@ from flask_test import app, api
 
 @app.route('/test')
 def index():
-    r = api.general.stats(period='ytd', timeframe='2013')
+    r = api.general.stats(timeframe='2013')
     print r
     print r.url
 
