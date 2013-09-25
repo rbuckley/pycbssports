@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-import requests
 import json
-from inspect import ismethod, getmembers
+from inspect import getmembers
 
 from flask import request, render_template
 
@@ -10,16 +9,32 @@ from flask_test import app, api
 
 @app.route('/test')
 def index():
-    r = api.general.stats(timeframe='2013')
+    r = api.general.stats(timeframe='2010', period='ytd')
     print r
     print r.url
 
-    #print json.dumps(r.json(), indent=4, separators=(', ', '; '))
+    print json.dumps(r.json(), indent=4, separators=(', ', '; '))
+    return render_template('test.html')
+
+
+@app.route('/test2')
+def index2():
+    r = api.league.details('arg', no_var='0')
+    print r
+    print r.url
+
+    # turns the json response into a python object
+    decoder = json.JSONDecoder()
+    league_details = decoder.decode(r.text)
+    print league_details.keys()
+
+
+    print json.dumps(r.json(), indent=4, separators=(', ', '; '))
     return render_template('test.html')
 
 
 @app.route('/')
-def test():
+def home():
     if api.access_token is None:
         access_token = request.args.get('access_token')
         api.set_access_token(access_token)
