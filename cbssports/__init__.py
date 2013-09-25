@@ -23,8 +23,12 @@ ALLOWED_PLAYER_STATUS = ('all', 'free_agents', 'owned')
 ALLOWED_POSITIONS = ('QB', 'RB', 'WR', 'TE', 'K', 'DST', 'all')
 ALLOWED_VIEW = ('playerbreakdown', 'teambreakdown')
 ALLOWED_STATS_TYPE = ('stats', 'projections', 'redzone')
-ALLOWED_SITUATIONS = ('win-loss', 'home-road', 'venue', 'conf', 'div', 'playing-surface', 'overall', 'vs-opponent', 'postseason')
-ALLOWED_TX_FILTERS = ('trades', 'lineup', 'add_drops', 'waivers', 'billable', 'custom', 'all_but_lineup', 'all')
+ALLOWED_SITUATIONS = ('win-loss', 'home-road', 'venue', 'conf',
+                      'div', 'playing-surface', 'overall',
+                      'vs-opponent', 'postseason')
+ALLOWED_TX_FILTERS = ('trades', 'lineup', 'add_drops', 'waivers',
+                      'billable', 'custom', 'all_but_lineup', 'all')
+ALLOWED_RESPONSE_VALUES = ('JSON', 'XML')
 
 
 # METHODS follows this
@@ -45,335 +49,388 @@ METHODS = {
     # league methods
     'league': {
         'owners': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'teams': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'dates': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'details': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'rules': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'schedules': [
-            ('response_format', str, ['optional']),
-            ('period', str, ['optional']),
-            ('team_id', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('period', str, {'optional': True}),
+            ('team_id', int, {'optional': True}),
         ],
         'rosters': [
-            ('response_format', str, ['optional']),
-            ('team_id', int, ['optional']),
-            ('point', int, ['optional']),
-            ('period', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('team_id', int, {'optional': True}),
+            ('point', int, {'optional': True}),
+            ('period', int, {'optional': True}),
         ],
         'fantasy__points': [
-            ('response_format', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
             ('timeframe', str, []),
             ('period', str, []),
-            ('player_id', int, ['optional']),
+            ('player_id', int, {'optional': True}),
         ],
         'stats': [
-            ('response_format', str, ['optional']),
-            ('limit', int, ['optional']),
-            ('offset', int, ['optional']),
-            ('player_id', int, ['optional']),
-            ('player_status', str, ['optional']),
-            ('position', str, ['optional']),
-            ('timeframe', str, ['optional']),
-            ('period', str, ['optional']),
-            ('stats_type', str, ['optional']),
-            ('source', str, ['optional']),
-            ('team_id', int, ['optional']),
-            ('team_type', str, ['optional']),
-            ('pro_or_fantasy', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('limit', int, {'optional': True}),
+            ('offset', int, {'optional': True}),
+            ('player_id', int, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('position', str, {'optional': True}),
+            ('timeframe', str, {'optional': True}),
+            ('period', str, {'optional': True}),
+            ('stats_type', str, {'optional': True}),
+            ('source', str, {'optional': True}),
+            ('team_id', int, {'optional': True}),
+            ('team_type', str, {'optional': True}),
+            ('pro_or_fantasy', str, {'optional': True}),
         ]
     },
     'league_fantasy__points': {
         'weekly__scoring': [
-            ('response_format', str, ['optional']),
-            ('timeframe', str, ['optional']),
-            ('player_id', int, ['optional']),
-            ('team_id', int, ['optional']),
-            ('team_type', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('position', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('timeframe', str, {'optional': True}),
+            ('player_id', int, {'optional': True}),
+            ('team_id', int, {'optional': True}),
+            ('team_type', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('position', str, {'optional': True}),
         ],
     },
     'league_transaction__list': {
         'add__drops': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'trades': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'log': [
-            ('response_format', str, ['optional']),
-            ('filter', str, ['optional']),
-            ('team_id', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('filter', str, {'optional': True}),
+            ('team_id', int, {'optional': True}),
         ]
     },
     # these methods can make changes to the league, might require special
     # groups
     'league_transactions': {
         'add__drop': [
-            ('response_format', str, ['optional']),
-            ('id', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('id', str, {'optional': True}),
         ],
         'lineup': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'trade': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'waiver__order': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ]
     },  # league.transactions
     'league_scoring': {
         'live': [
-            ('response_format', str, ['optional']),
-            ('team_id', int, ['optional']),
-            ('period', str, ['optional']),
-            ('no_players', bool, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('team_id', int, {'optional': True}),
+            ('period', str, {'optional': True}),
+            ('no_players', bool, {'optional': True}),
         ],
         'preview': [
-            ('response_format', str, ['optional']),
-            ('matchup_id', str, ['optional']),
-            ('team_id', int, ['optional']),
-            ('period', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('matchup_id', str, {'optional': True}),
+            ('team_id', int, {'optional': True}),
+            ('period', str, {'optional': True}),
         ],
         'categories': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'rules': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ]
     },  # league.scoring
     'league_standings': {
         'breakdown': [
-            ('response_format', str, ['optional']),
-            ('period', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('period', int, {'optional': True}),
         ],
         'by__period': [
-            ('response_format', str, ['optional']),
-            ('period', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('period', int, {'optional': True}),
         ],
         'overall': [
-            ('response_format', str, ['optional']),
-            ('period', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('period', int, {'optional': True}),
         ],
         'power': [
-            ('response_format', str, ['optional']),
-            ('period', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('period', str, {'optional': True}),
         ]
     },  # league.standings
     'league_draft': {
         'results': [
-            ('response_format', str, ['optional']),
-            ('round', int, ['optional']),
-            ('limit', int, ['optional']),
-            ('offset', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('round', int, {'optional': True}),
+            ('limit', int, {'optional': True}),
+            ('offset', int, {'optional': True}),
             ('suppress_player_data', int, ['optional', ('allowed', 1)]),
             ('suppress_team_data', int, ['optional', ('allowed', 1)]),
             ('suppress_round_data', int, ['optional', ('allowed', 1)]),
             ('minimum_data', int, ['optional', ('allowed', 1)]),
         ],
         'order': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'config': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ]
     },  # league.draft
     # stats methods
     'stats': {
         'defense__vs__position': [
-            ('response_format', str, ['optional']),
-            ('timeframe', str, ['optional']),
-            ('period', str, ['optional']),
-            ('position', str, ['optional']),
-            ('team', str, ['optional']),
-            ('view', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('timeframe', str, {'optional': True}),
+            ('period', str, {'optional': True}),
+            ('position', str, {'optional': True}),
+            ('team', str, {'optional': True}),
+            ('view', str, {'optional': True}),
         ],
         'situational_stats': [
-            ('response_format', str, ['optional']),
-            ('timeframe', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('timeframe', str, {'optional': True}),
             ('player_id', int, []),
-            ('situation', str, ['optional']),
+            ('situation', str, {'optional': True}),
         ],
         'categories': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ]
     },
     'players': {
         'average__draft__position': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('limit', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('limit', str, {'optional': True}),
         ],
         'gamelog': [
-            ('response_format', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
             ('player_id', int, []),
             ('timeframe', str, []),
-            ('num_games', str, ['optional']),
+            ('num_games', str, {'optional': True}),
             ('start_date', str, ['not_valid']),   # Baseball only
             ('end_date', str, ['not_valid']),   # Baseball only
         ],
         'inactives': [
-            ('response_format', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
             ('period', str, [])
         ],
         'injuries': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
         ],
         'list': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'outlook': [
 
-            ('response_format', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
             ('player_id', int, [])
         ],
         'profile': [
-            ('response_format', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
             ('player_id', int, [])
         ],
         'rankings': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('type', str, ['optional']),
-            ('source', str, ['optional']),
-            ('timeframe', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('type', str, {'optional': True}),
+            ('source', str, {'optional': True}),
+            ('timeframe', str, {'optional': True}),
         ],
         'search': [
-            ('response_format', str, ['optional']),
-            ('player_id', int, ['optional']),
-            ('pro_team', str, ['optional']),
-            ('name', str, ['optional']),
-            ('position', str, ['optional']),
-            ('team_id', int, ['optional']),
-            ('free_agents', str, ['optional']),
-            ('owned', str, ['optional']),
-            ('eligible_only', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('player_id', int, {'optional': True}),
+            ('pro_team', str, {'optional': True}),
+            ('name', str, {'optional': True}),
+            ('position', str, {'optional': True}),
+            ('team_id', int, {'optional': True}),
+            ('free_agents', str, {'optional': True}),
+            ('owned', str, {'optional': True}),
+            ('eligible_only', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ],
         'updates': [
-            ('response_format', str, ['optional']),
-            ('team_id', int, ['optional']),
-            ('team_type', str, ['optional']),
-            ('team_abbr', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_id', int, ['optional']),
-            ('eligible_position', str, ['optional']),
-            ('free_agents', int, ['optional']),
-            ('type', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('team_id', int, {'optional': True}),
+            ('team_type', str, {'optional': True}),
+            ('team_abbr', str, {'optional': True}),
+            ('position', str, {'optional': True}),
+            ('player_id', int, {'optional': True}),
+            ('eligible_position', str, {'optional': True}),
+            ('free_agents', int, {'optional': True}),
+            ('type', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ]
     },  # players
     'players_roster__trends': {
         'most__activated': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ],
         'most__added': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ],
         'most__benched': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ],
         'most__dropped': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ],
         'most__owned': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ],
         'most__started': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ],
         'most__traded': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ],
         'most__viewed': [
-            ('response_format', str, ['optional']),
-            ('position', str, ['optional']),
-            ('player_status', str, ['optional']),
-            ('limit', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('position', str, {'optional': True}),
+            ('player_status', str, {'optional': True}),
+            ('limit', int, {'optional': True}),
         ]
     },  # players.roster-trends
     'fantasy_news': {
         'story': [
-            ('response_format', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
             ('id', int, []),
         ],
         'headlines': [
-            ('response_format', str, ['optional']),
-            ('limit', int, ['optional']),
-            ('offset', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('limit', int, {'optional': True}),
+            ('offset', int, {'optional': True}),
         ],
     },
     'fantasy_league_news': {
         'story': [
-            ('response_format', str, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
             ('id', int, []),
         ],
         'headlines': [
-            ('response_format', str, ['optional']),
-            ('limit', int, ['optional']),
-            ('offset', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('limit', int, {'optional': True}),
+            ('offset', int, {'optional': True}),
         ],
     },
     'general': {
         'auction__values': [
-            ('response_format', str, ['optional']),
-            ('source', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('source', str, {'optional': True}),
         ],
         'stats': [
-            ('response_format', str, ['optional']),
-            ('timeframe', str, []),
-            ('period', str, []),
-            ('player_id', int, ['optional']),
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES}),
+            ('timeframe', str, {}),
+            ('period', str, {'allowed': ('ytd')}),
+            ('player_id', int, {'optional': True}),
         ],
         'positions': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'pro__teams': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ],
         'sports': [
-            ('response_format', str, ['optional'])
+            ('response_format', str, {'optional': True,
+                                      'allowed': ALLOWED_RESPONSE_VALUES})
         ]
     },  # general methods with no group
 }
-
-
-def _check_allowed(value, allowed_values):
-    if not value in allowed_values:
-        raise ValueError('%s is not allowed, try instead one of %s' % (value, allowed_values))
 
 
 def gen_cbssports_method(namespace, method_name, param_data):
@@ -386,30 +443,48 @@ def gen_cbssports_method(namespace, method_name, param_data):
         if 'optional' not in param[2]:
             required.append(param)
 
+    param_names = [x[0] for x in param_data]
+
     def cbssports_method(self, *args, **kwargs):
         params = {}
+        # if there are any args that arent 'key' = 'value' this
+        # loop goes through and assigns them in order of param_data
+        # listed above
         for i, arg in enumerate(args):
             print 'arg: ' + repr(arg)
-        params[param_data[i][0]] = arg
+            try:
+                params[param_data[i][0]] = arg
+            except IndexError:
+                raise ValueError('too many args for %s' % method_name)
+
         params.update(kwargs)
 
         # check for all required args
         for param in required:
             if param[0] not in params:
-                raise TypeError('%s: missing parameter %s'
+                raise TypeError('%s: missing parameter \'%s\''
                                 % (method_name, param[0]))
 
-        # check that remaining args match what we expect
-        for name, klass, options in param_data:
-            if name in params:
-                print params[name]
-            print 'arg: %s is a %s and has options %s' % (name, repr(klass), repr(options))
+        # check params to see if there is anything that
+        # should not be here
+        for param in params:
+            if param not in param_names:
+                raise ValueError('%s: unexpected arg \'%s\''
+                                 % (method_name, param))
+
+        # check for allowed values
+        for param in param_data:
+            if param[0] in params and 'allowed' in param[2]:
+                if params[param[0]] not in param[2]['allowed']:
+                    raise ValueError('\'%s\' is not allowed for %s, try instead one of %s'
+                                     % (params[param[0]], param[0], param[2]['allowed']))
 
         return self(method_name, params)
 
     cbssports_method.__name__ = method_name
     cbssports_method.__doc__ = \
-        "CBSSports API call. See http://www.developer.cbssports.com/documentation %s:%s" \
+        "CBSSports API call. See http://www.developer.\
+            cbssports.com/documentation %s:%s" \
         % (namespace, method_name)
 
     return cbssports_method
@@ -438,7 +513,6 @@ def generate_methods(args):
         # loop over each method in each group and process it
         for method, param_data in args[namespace].iteritems():
             methods[method] = gen_cbssports_method(namespace, method, param_data)
-            #print methods[method].__name__
 
         print('creating new class: %sGroup' % namespace.title())
         # need to add our new functions to the globals so they can be used later
@@ -497,7 +571,15 @@ class API(object):
         args = self._build_args(args)
 
         url = self._build_url(method)
-        return requests.get(url, params=args)
+        r = requests.get(url, params=args)
+        return self._parse_response(r, method)
+
+    def _parse_response(self, response, method):
+        if response.status_code == 200:
+            pass
+        else:
+            print 'error response from api'
+        return response
 
     def set_access_token(self, access_token):
         """Set the access_token if not already done"""

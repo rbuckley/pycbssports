@@ -9,24 +9,24 @@ from flask_test import app, api
 
 @app.route('/test')
 def index():
-    r = api.general.stats(timeframe='2010', period='ytd')
+    r = api.general.stats(period='ytd', timeframe='2013')
     print r
     print r.url
 
-    print json.dumps(r.json(), indent=4, separators=(', ', '; '))
+    #print json.dumps(r.json(), indent=4, separators=(', ', '; '))
     return render_template('test.html')
 
 
 @app.route('/test2')
 def index2():
-    r = api.league.details('arg', no_var='0')
+    r = api.league.stats(player_id='12345')
     print r
     print r.url
 
     # turns the json response into a python object
     decoder = json.JSONDecoder()
     league_details = decoder.decode(r.text)
-    print league_details.keys()
+    #print league_details.keys()
 
 
     print json.dumps(r.json(), indent=4, separators=(', ', '; '))
