@@ -12,15 +12,11 @@ from cbssports import CBSSportsError
 def index():
     print 'projections 2013'
     r = api.general.stats(period='projections', timeframe='2013', player_id='1616817')
-    print json.dumps(r.json(), indent=4, separators=(', ', '; '))
-
-    print 'projections, 4'
-    r = api.general.stats(period='projections', timeframe='2013', player_id='1616817')
-    print json.dumps(r.json(), indent=4, separators=(', ', '; '))
+    print r
 
     print 'ytd'
     r = api.general.stats(period='ytd', timeframe='2013', player_id='1616817')
-    print json.dumps(r.json(), indent=4, separators=(', ', '; '))
+    print r
     return render_template('test.html')
 
 
@@ -33,15 +29,6 @@ def index2():
         print inst
     else:
         print r
-        print r.url
-
-        #turns the json response into a python object
-        decoder = json.JSONDecoder()
-        league_details = decoder.decode(r.text)
-        print league_details.keys()
-
-        print json.dumps(r.json(), indent=4, separators=(', ', '; '))
-
     return render_template('test.html')
 
 
@@ -58,3 +45,8 @@ def home():
 
     url_methods = [x.replace('__', '-').replace('_', '.').replace('.', '/') for x in methods]
     return render_template('list_methods.html', methods=url_methods)
+
+
+@app.route('/search')
+def search():
+    return 'search coming soon'

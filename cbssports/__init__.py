@@ -568,7 +568,7 @@ class CBSSportsError(Exception):
 
 class API(object):
 
-    def __init__(self, response_format=None, access_token=None):
+    def __init__(self, response_format='JSON', access_token=None):
         """
         Provides access to the CBSSPORTS Development API
 
@@ -620,9 +620,8 @@ class API(object):
         if status_code == CBSSPORTS_EXCEPTION:
             raise CBSSportsError(json_response['body']['exceptions'])
         else:
-            print 'a ok ' + repr(status_code) + json_response['statusMessage']
             pass
-        return response
+        return json_response['body']
 
     def set_access_token(self, access_token):
         """Set the access_token if not already done"""
