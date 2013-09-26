@@ -6,13 +6,16 @@
 #
 import requests
 import datetime
+import json
 
 VERSION = '0.001a'
 
 CBSSPORTS_URL = 'http://api.cbssports.com/fantasy/'
 CBSSPORTS_API_VERSION = '2.0'
-JSON_RESPONSE_FORMAT = 'JSON'
-XML_RESPONSE_FORMAT = 'XML'
+
+CBSSPORTS_EXCEPTION = '400'
+CBSSPORTS_UNALLOWED_TYPE = 'val_not_allowed'
+CBSSPORTS_ACCESS_TOKEN_ERROR = 'access_token'
 
 ALLOWED_TIMEFRAME = ('season', 'weekly')
 ALLOWED_SOURCE = ('cbs', 'dave_richard', 'jamey_eisenberg', 'nathan_zegura')
@@ -28,6 +31,7 @@ ALLOWED_SITUATIONS = ('win-loss', 'home-road', 'venue', 'conf',
                       'vs-opponent', 'postseason')
 ALLOWED_TX_FILTERS = ('trades', 'lineup', 'add_drops', 'waivers',
                       'billable', 'custom', 'all_but_lineup', 'all')
+ALLOWED_PERIOD = ('ytd', '3yr', 'projections')
 ALLOWED_RESPONSE_VALUES = ('JSON', 'XML')
 
 
@@ -93,7 +97,7 @@ METHODS = {
                                       'allowed': ALLOWED_RESPONSE_VALUES}),
             ('limit', int, {'optional': True}),
             ('offset', int, {'optional': True}),
-            ('player_id', int, {'optional': True}),
+            ('player_id', list, {'optional': True}),
             ('player_status', str, {'optional': True}),
             ('position', str, {'optional': True}),
             ('timeframe', str, {'optional': True}),
@@ -395,7 +399,7 @@ METHODS = {
         'story': [
             ('response_format', str, {'optional': True,
                                       'allowed': ALLOWED_RESPONSE_VALUES}),
-            ('id', int, []),
+            ('id', str, []),
         ],
         'headlines': [
             ('response_format', str, {'optional': True,
@@ -413,9 +417,10 @@ METHODS = {
         'stats': [
             ('response_format', str, {'optional': True,
                                       'allowed': ALLOWED_RESPONSE_VALUES}),
-            ('timeframe', str, {}),
-            ('period', str, {'allowed': ('ytd')}),
-            ('player_id', int, {'optional': True}),
+            ('timeframe', str, {'allowed_mask': ('YYYY')}),
+            ('period', str, {'allowed': ALLOWED_PERIOD,
+                             'allowed_mask': 'YYYYMMDD'}),
+            ('player_id', list, {'optional': True}),
         ],
         'positions': [
             ('response_format', str, {'optional': True,
@@ -431,6 +436,32 @@ METHODS = {
         ]
     },  # general methods with no group
 }
+
+
+def _fix_param(name, klass, options, param):
+    """
+        need to fix params that come in as lists to be
+        comma separated
+    """
+    if klass is list and isinstance(param, list):
+        new_param = ''
+        for idx, single in enumerate(param, start=1):
+            new_param += single
+            if idx != len(param):
+                new_param += ','
+        return new_param
+    return param
+
+
+def _check_allowed(name, klass, allowed, param):
+    if param not in allowed:
+        raise CBSSportsError([{'msg': 'value \'%s\' not allowed, try one of <%s>' % (param, allowed),
+                               'type': CBSSPORTS_UNALLOWED_TYPE}])
+    return True
+
+
+def _check_allowed_mask(name, allowed, param):
+    print allowed
 
 
 def gen_cbssports_method(namespace, method_name, param_data):
@@ -451,7 +482,6 @@ def gen_cbssports_method(namespace, method_name, param_data):
         # loop goes through and assigns them in order of param_data
         # listed above
         for i, arg in enumerate(args):
-            print 'arg: ' + repr(arg)
             try:
                 params[param_data[i][0]] = arg
             except IndexError:
@@ -472,12 +502,14 @@ def gen_cbssports_method(namespace, method_name, param_data):
                 raise ValueError('%s: unexpected arg \'%s\''
                                  % (method_name, param))
 
-        # check for allowed values
-        for param in param_data:
-            if param[0] in params and 'allowed' in param[2]:
-                if params[param[0]] not in param[2]['allowed']:
-                    raise ValueError('\'%s\' is not allowed for %s, try instead one of %s'
-                                     % (params[param[0]], param[0], param[2]['allowed']))
+        # run through and fix any params from python form to cbssports api form
+        for name, klass, options in param_data:
+            if name in params:
+                #if 'allowed' in options or 'allowed_mask' in options:
+                 #   passed = _check_allowed(name, klass, options['allowed'], params[name])
+                #elif 'allowed_mask' in options:
+                #    _check_allowed_mask(name, options['allowed_mask'], params[name])
+                params[name] = _fix_param(name, klass, options, params[name])
 
         return self(method_name, params)
 
@@ -499,7 +531,6 @@ class Group(object):
         self._name = name
 
     def __call__(self, method=None, args=None):
-        print ('from %s calling method: %s' % (self._name, method))
         if method is None:
             return self
         return self._client('%s.%s' % (self._name, method), args)
@@ -508,13 +539,11 @@ class Group(object):
 def generate_methods(args):
     # loop over all the groups in the METHODS table
     for namespace in args:
-        print namespace
         methods = {}
         # loop over each method in each group and process it
         for method, param_data in args[namespace].iteritems():
             methods[method] = gen_cbssports_method(namespace, method, param_data)
 
-        print('creating new class: %sGroup' % namespace.title())
         # need to add our new functions to the globals so they can be used later
         group = type('%sGroup' % namespace.title(), (Group,), methods)
 
@@ -525,11 +554,16 @@ generate_methods(METHODS)
 
 class CBSSportsError(Exception):
     """ Exception class for custom errors """
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, values):
+        self.values = values
 
     def __str__(self):
-        return repr(self.value)
+        to_return = ''
+        for idx, value in enumerate(self.values, start=1):
+            to_return += value['msg']
+            if idx != len(self.values):
+                to_return += '\n'
+        return to_return
 
 
 class API(object):
@@ -558,10 +592,10 @@ class API(object):
             self.__dict__[namespace] = eval('%sGroup(self, \'%s\')' % (namespace.title(), '%s' % namespace))
 
     def __call__(self, method=None, args=None):
-        print 'calling %s with args %s' % (method, repr(args))
         """Do the actual call to the REST api"""
         if self.access_token is None:
-            raise CBSSportsError("access_token must be set before making an API call")
+            raise CBSSportsError([{'msg': 'No access token set',
+                                   'type': CBSSPORTS_ACCESS_TOKEN_ERROR}])
 
         if method is None:
             return self
@@ -571,14 +605,23 @@ class API(object):
         args = self._build_args(args)
 
         url = self._build_url(method)
+
         r = requests.get(url, params=args)
+
         return self._parse_response(r, method)
 
     def _parse_response(self, response, method):
-        if response.status_code == 200:
-            pass
+        # decode the JSON object
+        decoder = json.JSONDecoder()
+        json_response = decoder.decode(response.text)
+
+        status_code = json_response['statusCode']
+
+        if status_code == CBSSPORTS_EXCEPTION:
+            raise CBSSportsError(json_response['body']['exceptions'])
         else:
-            print 'error response from api'
+            print 'a ok ' + repr(status_code) + json_response['statusMessage']
+            pass
         return response
 
     def set_access_token(self, access_token):
@@ -590,7 +633,7 @@ class API(object):
         if args is None:
             args = {}
 
-        response_set = 'response_format' in args.keys()
+        #response_set = 'response_format' in args.keys()
 
         for arg in args:
             pass
@@ -600,8 +643,9 @@ class API(object):
 
         # if a response format was passed in on initialization use it
         # otherwise we do not pass the argument which results in xml response
-        if not response_set and self.default_response == 'JSON':
-            args['response_format'] = JSON_RESPONSE_FORMAT
+        #if not response_set and self.default_response == 'JSON':
+        # this version of the app will force JSON response
+        args['response_format'] = 'JSON'
 
         return args
 
@@ -611,7 +655,6 @@ class API(object):
         Or .s need to be put in
         Or if it starts with general, remove it  all
         """
-
         return method.replace('__', '-').replace('_', '.').replace('general.', '')
 
     def _build_url(self, parts):
